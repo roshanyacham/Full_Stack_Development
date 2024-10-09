@@ -1,3 +1,4 @@
+<!-- Build a table -->
 <table>
     <tr>
     <th>name</th>
@@ -52,12 +53,162 @@ mountainsDiv.appendChild(buildTable(MOUNTAINS))
 
 
 
+<!-- Elements by tagname -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elements by Tag Name</title>
+</head>
+<body>
+  <h1>Heading with a <span>span</span> element.</h1>
+  <p>A paragraph with <span>one</span>, <span>two</span> spans.</p>
+
+  <script>
+    function byTagName(node, tagName) {
+      let result = [];
+
+      function traverse(currentNode) {
+        if (currentNode.nodeType === document.ELEMENT_NODE) {
+          if (currentNode.nodeName.toLowerCase() === tagName.toLowerCase()) {
+            result.push(currentNode);
+          }
+
+          for (let child of currentNode.childNodes) {
+            traverse(child);
+          }
+        }
+      }
+
+      traverse(node);
+      return result;
+    }
+
+    console.log(byTagName(document.body, "h1").length);  // → 1
+    console.log(byTagName(document.body, "span").length);  // → 3
+    let para = document.querySelector("p");
+    console.log(byTagName(para, "span").length);  // → 2
+  </script>
+</body>
+</html>
 
 
 
+<!-- Mouse trail -->
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mouse Trail</title>
+  <style>
+    .trail {
+      position: absolute;
+      height: 6px;
+      width: 6px;
+      border-radius: 3px;
+      background: teal;
+      pointer-events: none;
+    }
+    body {
+      height: 100vh;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const numTrailElements = 12;
+    let trailElements = [];
+    for (let i = 0; i < numTrailElements; i++) {
+      let div = document.createElement('div');
+      div.classList.add('trail');
+      document.body.appendChild(div);
+      trailElements.push(div);
+    }
 
+    let currentIndex = 0;
+    window.addEventListener('mousemove', (event) => {
+      let trailElement = trailElements[currentIndex];
+      trailElement.style.left = (event.pageX - 3) + 'px';
+      trailElement.style.top = (event.pageY - 3) + 'px';
+      currentIndex = (currentIndex + 1) % numTrailElements;
+    });
+  </script>
+</body>
+</html>
 
+<!-- Tabs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabbed Interface</title>
+  <style>
+    .tabs button {
+      padding: 10px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      background-color: teal;
+      color: white;
+    }
+
+    .content {
+      display: none;
+    }
+    .content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <tab-panel>
+    <div data-tabname="one">Content of Tab One</div>
+    <div data-tabname="two">Content of Tab Two</div>
+    <div data-tabname="three">Content of Tab Three</div>
+  </tab-panel>
+
+  <script>
+    function asTabs(node) {
+      const tabsContainer = document.createElement('div');
+      tabsContainer.classList.add('tabs');
+
+      const tabs = Array.from(node.children); 
+      tabs.forEach((tab, index) => {
+        const button = document.createElement('button');
+        button.textContent = tab.getAttribute('data-tabname'); 
+
+        button.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tabsContainer.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+          tab.classList.add('active');
+          button.classList.add('active');
+        });
+        tabsContainer.appendChild(button);
+      });
+      node.insertBefore(tabsContainer, node.firstChild);
+      tabs.forEach((tab, index) => {
+        if (index === 0) {
+          tab.classList.add('active');
+          tabsContainer.querySelector('button').classList.add('active'); 
+        } else {
+          tab.classList.add('content');
+        }
+      });
+    }
+    asTabs(document.querySelector("tab-panel"));
+  </script>
+
+</body>
+</html>
 
 
 
